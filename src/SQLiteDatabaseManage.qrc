@@ -1,0 +1,43 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/new.png</file>
+        <file>images/open.png</file>
+        <file>images/cut.png</file>
+        <file>images/copy.png</file>
+        <file>images/paste.png</file>
+        <file>images/save.png</file>
+        <file>images/icon.png</file>
+        <file>images/run.png</file>
+        <file>images/find.png</file>
+        <file>images/isnull.png</file>
+        <file>images/sqlfileopen.png</file>
+        <file>images/sqlfilesave.png</file>
+        <file>images/tableadd.png</file>
+        <file>images/tabledelete.png</file>
+        <file>images/exit.png</file>
+        <file>images/delete.png</file>
+        <file>images/deleterow.png</file>
+        <file>images/insertrow.png</file>
+        <file>images/renametable.png</file>
+        <file>images/tableedit.png</file>
+        <file>images/opentable.png</file>
+        <file>images/database.png</file>
+        <file>images/tablemultiple.png</file>
+        <file>images/index.png</file>
+        <file>images/createindex.png</file>
+        <file>images/closeconnect.png</file>
+        <file>images/deleteindex.png</file>
+        <file>images/displayindex.png</file>
+        <file>images/primary.png</file>
+        <file>images/newsqlfile.png</file>
+        <file>images/columns.png</file>
+        <file>images/trigger.png</file>
+        <file>images/saveall.png</file>
+        <file>images/refresh.png</file>
+        <file>images/runsql.png</file>
+        <file>images/view.png</file>
+        <file>images/key.png</file>
+        <file>qss/SQLite GUI.qss</file>
+        <file>translations/SQLiteDatabaseManage.qm</file>
+    </qresource>
+</RCC>

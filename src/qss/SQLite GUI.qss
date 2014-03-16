@@ -1,0 +1,124 @@
+
+QStatusBar {
+     font: 10pt;
+}
+
+QPlainTextEdit:hover {
+      border: 2px groove gray;
+      border-color: deepskyblue;
+}
+
+QLineEdit:hover {
+      border-radius: 2px;
+      border: 2px groove;
+      border-color: deepskyblue
+}
+
+QGroupBox {
+     border: 1px groove gray;
+     border-radius: 2px;
+/*     border-color: deepskyblue;*/
+     margin-top: 2ex; 
+}
+
+
+QGroupBox::title {
+     font: bold;
+/*     color: red;*/
+     subcontrol-origin: margin;
+     subcontrol-position: top center;
+     padding: 0 3px;
+}
+
+
+/*
+QTableView {
+     selection-background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,
+                                 stop: 0 darkgreen, stop: 1 lightgreen);
+}
+*/
+
+/*
+QTreeView {
+     alternate-background-color: yellow;
+ }
+
+QTreeView {
+     show-decoration-selected: 1;
+ }
+
+ QTreeView::item {
+      border: 1px solid #d9d9d9;
+     border-top-color: transparent;
+     border-bottom-color: transparent;
+ }
+
+ QTreeView::item:hover {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e7effd, stop: 1 #cbdaf1);
+     border: 1px solid #bfcde4;
+ }
+
+ QTreeView::item:selected {
+     border: 1px solid #567dbc;
+ }
+
+ QTreeView::item:selected:active{
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6ea1f1, stop: 1 #567dbc);
+ }
+
+ QTreeView::item:selected:!active {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6b9be8, stop: 1 #577fbf);
+ }
+*/
+
+QToolTip {
+/*    background-color: springgreen;*/
+/*    border-color: gray;*/
+    border-color: black;
+    border-width: 2px;
+    border-style: solid;
+    padding: 1px 5px;
+/*    font: bold;*/
+}
+
+ QTabWidget::pane { /* The tab widget frame */
+     border: 1px groove gray;
+     background-color: white;
+ }
+
+ QTabWidget::tab-bar {
+     left: 5px; /* move to the right by 5px */
+ }
+
+ /* Style the tab using the tab sub-control. Note that
+     it reads QTabBar _not_ QTabWidget */
+/*
+ QTabBar::tab {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 deepskyblue, stop: 0.4 #DDDDDD,
+                                 stop: 0.5 #D8D8D8, stop: 1.0 lightblue);
+ 
+     border: 1px solid aqua;
+     border-bottom-color: aqua;
+     border-top-left-radius: 4px;
+     border-top-right-radius: 4px;
+     min-width: 8ex;
+     padding: 2px;
+ }
+
+ QTabBar::tab:selected, QTabBar::tab:hover {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,
+                                 stop: 0 red, stop: 1 white);
+ }
+
+
+ QTabBar::tab:selected {
+     border-color: deepskyblue;
+     border-bottom-color: aqua;
+ }
+
+
+ QTabBar::tab:!selected {
+     margin-top: 2px; 
+ }
+*/
