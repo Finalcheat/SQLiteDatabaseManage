@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
         app.installTranslator(&translator);
     }
 
-    QFile file(":/qss/SQLite GUI.qss");
+    QFile file(":/qss/SQLite Database Manage.qss");
     file.open(QFile::ReadOnly);
     app.setStyleSheet(file.readAll());
 //    QTextCodec::codecForName("GB2313");

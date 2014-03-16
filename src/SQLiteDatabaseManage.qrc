@@ -37,7 +37,7 @@
         <file>images/runsql.png</file>
         <file>images/view.png</file>
         <file>images/key.png</file>
-        <file>qss/SQLite GUI.qss</file>
         <file>translations/SQLiteDatabaseManage.qm</file>
+        <file>qss/SQLite Database Manage.qss</file>
     </qresource>
 </RCC>
