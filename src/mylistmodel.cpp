@@ -40,7 +40,7 @@ void MyListModel::setSourceString()
     str  << "select" << "insert" << "table" << "create" << "from" << "primary" << "key"
          << "drop" << "view" << "index" << "trigger" << "delete" << "alter" << "where"
          << "and" << "or" << "in" << "between" << "on" << "values" << "group" << "by"
-         << "asc" << "desc" << "into" << "rename";
+         << "asc" << "desc" << "into" << "rename" << "like";
 }
 
 void MyListModel::setCurrentSet(const QSet<QString> &s)

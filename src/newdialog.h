@@ -15,7 +15,7 @@ public:
 
 public:
     bool checkState() const;
-    QString fileLocationName() const { return fileLocationStr; }
+    QString fileLocationName();
     QString fileName() const;
 
 private slots:

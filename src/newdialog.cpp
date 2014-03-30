@@ -19,8 +19,8 @@ NewDialog::NewDialog(QWidget *parent) :
     nameLabel->setBuddy(nameLineEdit);
     locationsLabel = new QLabel(tr("File Locations:"));
     fileLocationStr = QApplication::applicationDirPath();
-    fileLocationStr.replace(QString(("/")), QString(("\\")));
-    fileLocationsLabel = new QLabel(fileLocationStr + "\\");
+    //fileLocationStr.replace(QString(("/")), QString(("\\")));
+    fileLocationsLabel = new QLabel(fileLocationStr + "/");
     fileLocationsButton = new QPushButton(tr("Select"));
     okButton = new QPushButton(tr("OK"));
     okButton->setEnabled(false);
@@ -69,7 +69,7 @@ void NewDialog::selectClicked()
         int index = databaseName.lastIndexOf("/");
         nameLineEdit->setText(databaseName.mid(index + 1));
         fileLocationStr = databaseName.left(index + 1);
-        fileLocationStr.replace(QString(("/")), QString(("\\")));
+//        fileLocationStr.replace(QString(("/")), QString(("\\")));
         fileLocationsLabel->setText(fileLocationStr);
     }
 }
@@ -87,4 +87,9 @@ bool NewDialog::checkState() const
 QString NewDialog::fileName() const
 {
     return nameLineEdit->text();
+}
+
+QString NewDialog::fileLocationName()
+{
+    return fileLocationStr.replace(QString(("/")), QString(("\\")));
 }

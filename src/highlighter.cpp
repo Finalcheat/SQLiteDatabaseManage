@@ -149,7 +149,7 @@ void Highlighter::initializationKeyWord()
                     << "\\bbetween\\b" << "\\bBETWEEN\\b" << "\\bgroup\\b"
                     << "\\bGROUP\\B" << "\\bby\\b" << "\\bBY\\b" << "\\bdelete\\b"
                     << "\\bDELETE\\b" << "\\bas\\b" << "\\bAS\\b" << "\\btrigger\\b"
-                    << "\\bTRIGGER\\b";
+                    << "\\bTRIGGER\\b" << "\\blike\\b" << "\\bLIKE\\b";
 
     foreach (const QString &pattern, keywordPatterns)
     {

@@ -113,7 +113,7 @@ void TableView::cut()
 {
     if (MainWindow::getCurrentReadOnly())
     {
-        QMessageBox::information(this, tr("SQLite GUI"),
+        QMessageBox::information(this, tr("SQLite Database Manage"),
                                  tr("The information cannot be cut because the "
                                     "current settings is Read Only."));
     }
@@ -163,7 +163,7 @@ void TableView::paste()
 {
     if (MainWindow::getCurrentReadOnly())
     {
-        QMessageBox::information(this, tr("SQLite GUI"),
+        QMessageBox::information(this, tr("SQLite Database Manage"),
                                  tr("The information cannot be pasted because the "
                                     "current settings is Read Only."));
         return;
@@ -181,7 +181,7 @@ void TableView::paste()
 
     if (numRows * numColumns != indexList.size())
     {
-        QMessageBox::information(this, tr("SQLite GUI"),
+        QMessageBox::information(this, tr("SQLite Database Manage"),
                                  tr("The information cannot be pasted because the copy "
                                     "and paste areas aren't the same size."));
         return;
@@ -209,7 +209,7 @@ void TableView::del()
 {
     if (MainWindow::getCurrentReadOnly())
     {
-        QMessageBox::information(this, tr("SQLite"),
+        QMessageBox::information(this, tr("SQLite Database Manage"),
                                  tr("The row cannot be delete because the "
                                     "current settings is Read Only."));
         return;
@@ -230,7 +230,7 @@ void TableView::insertRow()
 {
     if (MainWindow::getCurrentReadOnly())
     {
-        QMessageBox::information(this, tr("SQLite GUI"),
+        QMessageBox::information(this, tr("SQLite Database Manage"),
                                  tr("The row cannot be insert because the "
                                     "current settings is Read Only."));
         return;
@@ -248,13 +248,13 @@ void TableView::delRow()
 {
     if (MainWindow::getCurrentReadOnly())
     {
-        QMessageBox::information(this, tr("SQLite GUI"),
+        QMessageBox::information(this, tr("SQLite Database Manage"),
                                  tr("The row cannot be delete because the "
                                     "current settings is Read Only."));
         return;
     }
 
-    int ok = QMessageBox::warning(this, tr("SQLite GUI"),
+    int ok = QMessageBox::warning(this, tr("SQLite Database Manage"),
                                   tr("Are you sure delete the current rows"),
                                   QMessageBox::Yes | QMessageBox::Default,
                                   QMessageBox::No,

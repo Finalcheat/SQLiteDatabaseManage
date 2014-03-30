@@ -202,7 +202,7 @@ void TabWidget::tableClose(int index)
 //    }
     if (w->isWindowModified())
     {
-        int r = QMessageBox::warning(this, tr("SQLite GUI"),
+        int r = QMessageBox::warning(this, tr("SQLite Database Manage"),
                                      tr("The document has been modified.\n"
                                         "Do you want to save your changes?"),
                                      QMessageBox::Yes | QMessageBox::Default,
@@ -579,7 +579,7 @@ void TabWidget::queryChanged(const QString &database, const QString &connectName
     {
         if (findText(database))
         {
-            QMessageBox::information(this, tr("SQLite GUI"), tr("The Query already exist"));
+            QMessageBox::information(this, tr("SQLite Database Manage"), tr("The Query already exist"));
             return;
         }
         QString className = w->metaObject()->className();

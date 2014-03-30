@@ -53,6 +53,7 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent), font("", 11)
     lineNumberArea = new LineNumberArea(this);
 
     listView = new MyListView(parent);
+    listView->resize(180, 140);
 //    listView->setMaximumWidth(500);
     listView->setIconSize(QSize(13, 13));
 //    listView->setHidden(true);
@@ -327,7 +328,7 @@ void CodeEditor::textChanged(int position, int charsRemoved, int charsAdded)
         return;
     }
 
-    QRegExp regExp("\\b" + temp);
+    QRegExp regExp("\\b" + temp, Qt::CaseInsensitive);
 //    if (regExp.captureCount() == 0)
 //    {
 //        qDebug() << regExp.capturedTexts();
@@ -349,7 +350,7 @@ void CodeEditor::textChanged(int position, int charsRemoved, int charsAdded)
 //    QTextCursor testCursor = textCursor();
 //    qDebug() << listView->spacing();
 //    if (count < 10)
-    listView->resize(180, count * (listView->fontMetrics().height() + 7));
+    //listView->resize(180, count * (listView->fontMetrics().height() + 7));
 //    else
 //        listView->resize(listView->width(), listView->sizeHint().height());
 //    int y = pos().y();

@@ -222,7 +222,7 @@ void ModifyTableFieldWidget::deleteRow()
 
 void ModifyTableFieldWidget::submit()
 {
-    int r = QMessageBox::warning(this, tr("SQLite GUI"),
+    int r = QMessageBox::warning(this, tr("SQLite Database Manage"),
                                  tr("Are you sure save your changes?"),
                                  QMessageBox::Yes | QMessageBox::Default,
                                  QMessageBox::No,

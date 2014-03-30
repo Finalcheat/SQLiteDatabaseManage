@@ -174,6 +174,7 @@ void MainWindow::createActions()
 
     insertRowAction = new QAction(tr("&Insert row"), this);
     insertRowAction->setIcon(QIcon(":/images/insertrow.png"));
+    insertRowAction->setShortcut(Qt::Key_Insert);
     insertRowAction->setStatusTip(tr("Insert a row in current Table"));
     connect(insertRowAction, SIGNAL(triggered()), tabWidget, SLOT(insertRow()));
 
@@ -522,8 +523,8 @@ void MainWindow::openDatabaseFile()
 
 bool MainWindow::createConnect(const QString &databaseName)
 {
-    if (!QFile::exists(databaseName))
-        return false;
+//    if (!QFile::exists(databaseName))
+//        return false;
 
     {
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", databaseName);
@@ -570,6 +571,7 @@ void MainWindow::setTreeData(const QStringList &databaseName)
         return;
     }
 
+    //qDebug() << databaseName;
     for (int i = 0; i < databaseName.size(); ++i)
     {
         if (createConnect(databaseName[i]))
@@ -670,6 +672,7 @@ void MainWindow::newDatabase()
     {
         if (dialog.checkState())
         {
+            qDebug() << dialog.fileLocationName() + dialog.fileName();
             setTreeData(QStringList(dialog.fileLocationName() + dialog.fileName()));
         }
         else
@@ -1083,7 +1086,7 @@ void MainWindow::closeDatabaseConnect()
     QTreeWidgetItem *item = treeWidget->currentItem();
 
     QString connectName = item->text(0);
-    int index = connectName.lastIndexOf("\\");
+    int index = connectName.lastIndexOf("/");
     index = comboBox->findText(connectName.mid(index + 1));
     comboBox->removeItem(index);
     QSqlDatabase::removeDatabase(connectName);

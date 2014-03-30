@@ -160,7 +160,7 @@ bool NewTableWidget::save()
         query.exec(sqlStr);
         if (!query.isActive())
         {
-            QMessageBox::information(this, tr("SQLite GUI"), query.lastError().text());
+            QMessageBox::information(this, tr("SQLite Database Manage"), query.lastError().text());
             return false;
         }
     }
