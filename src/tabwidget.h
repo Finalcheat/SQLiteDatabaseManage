@@ -56,10 +56,11 @@ public slots:
 private slots:
     void tableClose(int index);
     void currentWidgetChanged(int index);
+    void tableDataChanged(const QString &connectName, const QString &tableName, bool b);
 
 private:
     void setReadOnlyPrivate(QTableView *view, bool isRead);
-    bool findText(const QString &text);
+    int findText(const QString &text);
     QString getCurrentClassName() const;
 };
 

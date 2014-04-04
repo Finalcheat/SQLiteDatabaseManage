@@ -10,15 +10,32 @@
 #include <QSqlError>
 #include <QSqlIndex>
 #include <QSqlRecord>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLineEdit>
+#include <QLabel>
+#include <QPushButton>
+#include <QSqlQuery>
 #include <QDebug>
 
 TableView::TableView(const QString &connectName, const QString &tableName, QWidget *parent) :
-    QTableView(parent)
+    QWidget(parent)
 {
     QSqlDatabase db = QSqlDatabase::database(connectName);
+    QSqlQuery query(db);
+    query.exec(tr("select count(*) from %1").arg(tableName));
+    uint rowCount = 0;
+    while (query.next())
+    {
+       rowCount = query.value(0).toUInt();
+    }
+    //qDebug() << rowCount;
+    uint page = rowCount / rowNumber;
+    pageCount = rowCount % rowNumber ? page + 1 : page;
 //    qDebug() << db.primaryIndex(tableName).fieldName(0) << endl;
-    model = new QSqlTableModel(0, db);
+    model = new QSqlTableModel(this, db);
     model->setTable(tableName);
+    model->setFilter(tr(" 1=1 limit 0,%1").arg(rowNumber));
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     model->select();
 
@@ -28,15 +45,57 @@ TableView::TableView(const QString &connectName, const QString &tableName, QWidg
 //        model->setHeaderData(i, Qt::Horizontal, record.fieldName(i));
 //    }
 
-    this->setModel(model);
-    this->resizeColumnsToContents();
-    this->setSelectionMode(QAbstractItemView::ContiguousSelection);
+    view = new QTableView(this);
+    view->setModel(model);
+    view->resizeColumnsToContents();
+    view->setSelectionMode(QAbstractItemView::ContiguousSelection);
+
+    QHBoxLayout *bottomLayout = new QHBoxLayout();
+    firstButton = new QPushButton(tr("First"));
+    firstButton->setEnabled(false);
+    prevButton = new QPushButton(tr("Previous"));
+    prevButton->setEnabled(false);
+    //prevButton->setIcon();
+    pageNumberlineEdit = new QLineEdit();
+    pageNumberlineEdit->setEnabled(false);
+    pageNumberlineEdit->setText("1");
+    pageNumberlineEdit->setFixedWidth(50);
+    pageNumberlineEdit->setAlignment(Qt::AlignHCenter);
+    QLabel *label = new QLabel(tr("/"));
+    QLabel *countLabel = new QLabel(QString::number(pageCount));
+    nextButton = new QPushButton(tr("Next"));
+    nextButton->setEnabled(pageCount > 1);
+    endButton = new QPushButton(tr("End"));
+    endButton->setEnabled(pageCount > 1);
+    bottomLayout->addStretch();
+    bottomLayout->addWidget(firstButton);
+    bottomLayout->addWidget(prevButton);
+    bottomLayout->addWidget(pageNumberlineEdit);
+    bottomLayout->addWidget(label);
+    bottomLayout->addWidget(countLabel);
+    bottomLayout->addWidget(nextButton);
+    bottomLayout->addWidget(endButton);
+    bottomLayout->addStretch();
+
+    QVBoxLayout *mainLayout = new QVBoxLayout();
+    mainLayout->addWidget(view);
+    mainLayout->addLayout(bottomLayout);
+
+    setLayout(mainLayout);
 
 //    setSortingEnabled(true);
 
     createMenu();
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showMenu(QPoint)));
     connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(dataChanged()));
+    connect(firstButton, SIGNAL(clicked()), this, SLOT(firstButtonClicked()));
+    connect(prevButton, SIGNAL(clicked()), this, SLOT(prevButtonClicked()));
+    connect(nextButton, SIGNAL(clicked()), this, SLOT(nextButtonClicked()));
+    connect(endButton, SIGNAL(clicked()), this, SLOT(endButtonClicked()));
+
+    setWindowTitle(tr("%1[*]").arg(tableName));
+    setWindowModified(false);
+
 }
 
 TableView::~TableView()
@@ -126,7 +185,7 @@ void TableView::cut()
 
 void TableView::copy()
 {
-    QItemSelectionModel *selectModel = selectionModel();
+    QItemSelectionModel *selectModel = view->selectionModel();
     if (!selectModel)
         return;
 
@@ -169,7 +228,7 @@ void TableView::paste()
         return;
     }
 
-    QItemSelectionModel *selectModel = selectionModel();
+    QItemSelectionModel *selectModel = view->selectionModel();
     if (!selectModel)
         return;
 
@@ -203,6 +262,7 @@ void TableView::paste()
     {
         model->setData(indexList[i], strValue[i]);
     }
+
 }
 
 void TableView::del()
@@ -215,7 +275,7 @@ void TableView::del()
         return;
     }
 
-    QItemSelectionModel *selectModel = selectionModel();
+    QItemSelectionModel *selectModel = view->selectionModel();
     if (!selectModel)
         return;
 
@@ -224,6 +284,7 @@ void TableView::del()
     {
         model->setData(indexList[i], tr(""));
     }
+
 }
 
 void TableView::insertRow()
@@ -240,8 +301,9 @@ void TableView::insertRow()
     model->insertRow(row);
 
     QModelIndex index = model->index(row, 0);
-    setCurrentIndex(index);
-    edit(index);
+    view->setCurrentIndex(index);
+    view->edit(index);
+
 }
 
 void TableView::delRow()
@@ -265,14 +327,15 @@ void TableView::delRow()
 //        qDebug() << selectionModel()->selectedRows(0).count();
 //        qDebug() << selectionModel()->selectedRows(0).begin()->row();
 
-        const int rowCount = selectionModel()->selectedRows(0).count();
-        int row = selectionModel()->selectedRows(0).begin()->row();
+        const int rowCount = view->selectionModel()->selectedRows(0).count();
+        int row = view->selectionModel()->selectedRows(0).begin()->row();
         for (int i = 0; i < rowCount; ++i)
         {
             model->removeRow(row++);
         }
 //        model->removeRow(currentIndex().row());
         model->submitAll();
+
     }
 }
 
@@ -280,17 +343,26 @@ void TableView::setRead(bool b)
 {
     if (b)
     {
-        setEditTriggers(QAbstractItemView::NoEditTriggers);
+        view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     }
     else
     {
-        setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::AnyKeyPressed);
+        view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::AnyKeyPressed);
     }
 }
 
-void TableView::dataChanged()
+void TableView::setShowGrid(bool b)
 {
-    setWindowModified(true);
+    view->setShowGrid(b);
+}
+
+void TableView::dataChanged()
+{   
+    if (!isWindowModified())
+    {
+        setWindowModified(true);
+        emit tableDataChanged(model->database().connectionName(), model->tableName(), true);
+    }
 }
 
 void TableView::save()
@@ -300,6 +372,8 @@ void TableView::save()
     {
         model->database().commit();
         setWindowModified(false);
+        emit tableDataChanged(model->database().connectionName(), model->tableName(), false);
+        setWindowModified(false);
     }
     else
     {
@@ -307,13 +381,13 @@ void TableView::save()
         QMessageBox::warning(this, tr("Cached Table"),
                              tr("The database reported an error: %1")
                              .arg(model->lastError().text()));
-    }
+    }  
 }
 
 void TableView::findNext(const QString &str, Qt::CaseSensitivity cs)
 {
-    int row = currentIndex().row();
-    int column = currentIndex().column() + 1;
+    int row = view->currentIndex().row();
+    int column = view->currentIndex().column() + 1;
     int RowCount = model->rowCount();
     int ColumnCount = model->columnCount();
 
@@ -324,8 +398,8 @@ void TableView::findNext(const QString &str, Qt::CaseSensitivity cs)
             QModelIndex findIndex = model->index(row, column);
             if (findIndex.data(Qt::DisplayRole).toString().contains(str, cs))
             {
-                clearSelection();
-                setCurrentIndex(findIndex);
+                view->clearSelection();
+                view->setCurrentIndex(findIndex);
                 activateWindow();
                 return;
             }
@@ -340,8 +414,8 @@ void TableView::findNext(const QString &str, Qt::CaseSensitivity cs)
 
 void TableView::findPrevious(const QString &str, Qt::CaseSensitivity cs)
 {
-    int row = currentIndex().row();
-    int column = currentIndex().column() - 1;
+    int row = view->currentIndex().row();
+    int column = view->currentIndex().column() - 1;
     int ColumnCount = model->columnCount();
 
     while (row >= 0)
@@ -351,8 +425,8 @@ void TableView::findPrevious(const QString &str, Qt::CaseSensitivity cs)
             QModelIndex findIndex = model->index(row, column);
             if (findIndex.data(Qt::DisplayRole).toString().contains(str, cs))
             {
-                clearSelection();
-                setCurrentIndex(findIndex);
+                view->clearSelection();
+                view->setCurrentIndex(findIndex);
                 activateWindow();
                 return;
             }
@@ -362,4 +436,61 @@ void TableView::findPrevious(const QString &str, Qt::CaseSensitivity cs)
         --row;
     }
     QApplication::beep();
+}
+
+void TableView::firstButtonClicked()
+{
+    model->setFilter(tr(" 1=1 limit 0,%1").arg(rowNumber));
+    pageNumberlineEdit->setText("1");
+
+    firstButton->setEnabled(false);
+    prevButton->setEnabled(false);
+    nextButton->setEnabled(pageCount > 1);
+    endButton->setEnabled(pageCount > 1);
+}
+
+void TableView::prevButtonClicked()
+{
+    bool b = false;
+    uint number = pageNumberlineEdit->text().toUInt(&b);
+    if (b)
+    {
+        --number;
+        int startNumber = (number - 1) * rowNumber;
+        model->setFilter(tr(" 1=1 limit %1,%2").arg(startNumber).arg(rowNumber));
+        pageNumberlineEdit->setText(QString::number(number));
+
+        firstButton->setEnabled(number > 1);
+        prevButton->setEnabled(number > 1);
+        nextButton->setEnabled(number < pageCount);
+        endButton->setEnabled(number < pageCount);
+    }
+}
+
+void TableView::nextButtonClicked()
+{
+    bool b = false;
+    uint number = pageNumberlineEdit->text().toUInt(&b);
+    if (b)
+    {
+        int startNumber = number * rowNumber;
+        ++number;
+        model->setFilter(tr(" 1=1 limit %1,%2").arg(startNumber).arg(rowNumber));
+        pageNumberlineEdit->setText(QString::number(number));
+
+        firstButton->setEnabled(number > 1);
+        prevButton->setEnabled(number > 1);
+        nextButton->setEnabled(number < pageCount);
+        endButton->setEnabled(number < pageCount);
+    }
+}
+
+void TableView::endButtonClicked()
+{
+    model->setFilter(tr(" 1=1 limit %1,%2").arg((pageCount - 1) * rowNumber).arg(rowNumber));
+    pageNumberlineEdit->setText(QString::number(pageCount));
+    firstButton->setEnabled(pageCount > 1);
+    prevButton->setEnabled(pageCount > 1);
+    nextButton->setEnabled(false);
+    endButton->setEnabled(false);
 }

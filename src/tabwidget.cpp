@@ -72,15 +72,33 @@ void TabWidget::createNewTableView(const QString &connectName, const QString &ta
     int index = connectName.lastIndexOf("\\");
     QString name = connectName.mid(index + 1) + '-' + tableName;
 
-    if (findText(name))
+    if (findText(name) != -1)
         return;
 
     TableView *view = new TableView(connectName, tableName, this);
-    setReadOnlyPrivate(view, MainWindow::getCurrentReadOnly());
+    //setReadOnlyPrivate(view, MainWindow::getCurrentReadOnly());
+    view->setRead(MainWindow::getCurrentReadOnly());
     view->setShowGrid(MainWindow::getCurrentShow());
+    connect(view, SIGNAL(tableDataChanged(QString,QString,bool)), this, SLOT(tableDataChanged(QString,QString,bool)));
 
     addTab(view, name);
     setCurrentWidget(view);
+}
+
+void TabWidget::tableDataChanged(const QString &connectName, const QString &tableName, bool b)
+{
+    int index = connectName.lastIndexOf("\\");
+    QString name = connectName.mid(index + 1) + '-' + tableName;
+
+    index = findText(name);
+    if (index != -1)
+    {
+        QString temp = "";
+        if (b)
+            temp = "*";
+
+        setTabText(index, name + temp);
+    }
 }
 
 void TabWidget::createNewQuery(const QString &connectName)
@@ -112,7 +130,7 @@ void TabWidget::createNewQuery(const QString &connectName)
     int index = connectName.lastIndexOf("\\");
     QString title = connectName.mid(index + 1) + tr("-SQL");
 
-    if (findText(title))
+    if (findText(title) != -1)
         return;
 
     QueryWidget *queryWidget = new QueryWidget(connectName, this);
@@ -144,7 +162,7 @@ void TabWidget::createNewTable(const QString &connectName)
     int index = connectName.lastIndexOf("\\");
     QString title = connectName.mid(index + 1) + tr("-New Table");
 
-    if (findText(title))
+    if (findText(title) != -1)
         return;
 
     NewTableWidget *widget = new NewTableWidget(connectName, this);
@@ -157,7 +175,7 @@ void TabWidget::createSystemTable(const QString &connectName, const QString &tab
     int index = connectName.lastIndexOf("\\");
     QString name = connectName.mid(index + 1) + '-' + tableName;
 
-    if (findText(name))
+    if (findText(name) != -1)
         return;
 
     SystemTableView *systemTable = new SystemTableView(connectName, tableName, this);
@@ -170,7 +188,7 @@ void TabWidget::createModifyTableField(const QString &connectName, const QString
     int index = connectName.lastIndexOf("\\");
     QString title = connectName.mid(index + 1) + "-" + tableName + tr("-Modify Field");
 
-    if (findText(title))
+    if (findText(title) != -1)
         return;
 
     ModifyTableFieldWidget *w = new ModifyTableFieldWidget(connectName, tableName, this);
@@ -183,7 +201,7 @@ void TabWidget::createIndex(const QString &connectName, const QString &tableName
 {
     int index = connectName.lastIndexOf("\\");
     QString title = connectName.mid(index + 1) + "-" + tableName + tr("-Create Index");
-    if (findText(title))
+    if (findText(title) != -1)
         return;
 
     CreateIndexWidget *w = new CreateIndexWidget(connectName, tableName, this);
@@ -543,17 +561,25 @@ void TabWidget::openSql(const QString &connectName)
     }
 }
 
-bool TabWidget::findText(const QString &text)
+int TabWidget::findText(const QString &text)
 {
     for (int i = 0; i < count(); ++i)
     {
-        if (tabText(i) == text)
+        QString tabTextStr = tabText(i);
+        if (tabTextStr.size() - 1 == text.size() && tabTextStr.endsWith('*'))
         {
-            setCurrentIndex(i);
-            return true;
+            tabTextStr.remove(tabTextStr.size() - 1, 1);
+        }
+        if (tabTextStr.size() == text.size())
+        {
+            if (tabTextStr == text)
+            {
+                setCurrentIndex(i);
+                return i;
+            }
         }
     }
-    return false;
+    return -1;
 }
 
 void TabWidget::runLineSql()
@@ -577,7 +603,7 @@ void TabWidget::queryChanged(const QString &database, const QString &connectName
     QWidget *w = currentWidget();
     if (w)
     {
-        if (findText(database))
+        if (findText(database) != -1)
         {
             QMessageBox::information(this, tr("SQLite Database Manage"), tr("The Query already exist"));
             return;
