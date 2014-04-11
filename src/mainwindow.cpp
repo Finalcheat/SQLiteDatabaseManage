@@ -672,7 +672,6 @@ void MainWindow::newDatabase()
     {
         if (dialog.checkState())
         {
-            qDebug() << dialog.fileLocationName() + dialog.fileName();
             setTreeData(QStringList(dialog.fileLocationName() + dialog.fileName()));
         }
         else

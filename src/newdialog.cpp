@@ -18,9 +18,9 @@ NewDialog::NewDialog(QWidget *parent) :
     nameLineEdit = new QLineEdit;
     nameLabel->setBuddy(nameLineEdit);
     locationsLabel = new QLabel(tr("File Locations:"));
-    fileLocationStr = QApplication::applicationDirPath();
+    fileLocationStr = QApplication::applicationDirPath() + "/";
     //fileLocationStr.replace(QString(("/")), QString(("\\")));
-    fileLocationsLabel = new QLabel(fileLocationStr + "/");
+    fileLocationsLabel = new QLabel(fileLocationStr);
     fileLocationsButton = new QPushButton(tr("Select"));
     okButton = new QPushButton(tr("OK"));
     okButton->setEnabled(false);
